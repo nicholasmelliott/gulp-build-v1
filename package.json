@@ -1,0 +1,23 @@
+{
+  "name": "gulp-build-v1",
+  "version": "1.0.0",
+  "description": "project 8 of full stack tech degree",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nick Elliott",
+  "license": "ISC",
+  "dependencies": {
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.10.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-copy": "^4.0.1",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglify": "^3.0.1",
+    "gulp-useref": "^3.1.6",
+    "gulp-webserver": "^0.9.1"
+  }
+}
