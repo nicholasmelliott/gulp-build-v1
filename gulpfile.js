@@ -40,10 +40,11 @@ const gulp = require('gulp'),
 	maps = require('gulp-sourcemaps'),
 	del = require('del'),
 	useref = require('gulp-useref'),
-	imageMin = require('gulp-imagemin');
+	imageMin = require('gulp-imagemin'),
+	runSequence = require('run-sequence');
 
 gulp.task('scripts', function() {
-    gulp.src([
+   return gulp.src([
         'js/circle/autogrow.js',
         'js/circle/circle.js',
         'js/global.js'
@@ -56,7 +57,7 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('styles', function() {
-    gulp.src(['sass/global.scss'])
+    return gulp.src(['sass/global.scss'])
     .pipe(maps.init())
     .pipe(sass())
     .pipe(concat('all.min.css'))
@@ -66,31 +67,48 @@ gulp.task('styles', function() {
 });
 
 gulp.task('images', function(){
-	gulp.src('images/*')
+	return gulp.src('images/*')
 	.pipe(imageMin())
 	.pipe(copy('dist/content', { prefix: 1 }));
 });
+
 
 gulp.task('watchFiles', function() {
   gulp.watch('sass/global.scss', ['styles']);
 });
 
+gulp.task('reload', function(){
+
+})
+
 gulp.task('serve', function(){
 	gulp.src(['dist'])
 		.pipe(webserver({
+			livereload: {
+				enable: true,
+				filter: function(fileName) {
+          			if (fileName.match(/.map$/)) { // exclude all source maps from livereload
+            			return false;
+          			} else {
+            			return true;
+          			} 
+				}	
+			},
 			port: 3000,
 			open: true
-		}));
+			}));
 });
 
 gulp.task('clean', function(){
 	return del(['dist/content','dist/scripts','dist/styles']);
 });
 
-gulp.task('build', ['clean'], function(){
-	return gulp.start(['scripts', 'styles', 'images']);
+gulp.task('build', ['clean'], function(callback){
+	runSequence('images', ['scripts', 'styles'], function(){
+		callback();
+	});
 });
 
 gulp.task('default', ['build'], function(){
-	gulp.start('serve');
+	gulp.start('serve','watchFiles');
 });
