@@ -24,7 +24,7 @@
  	-The gulp build command properly runs the clean, scripts, styles, and images tasks.
  	-The clean task fully completes before the scripts, styles, and images tasks are ran.
 
-8. Default Task:
+(COMPLETE) 8. Default Task:
 	-The gulp command properly runs the build task as a dependency
 	-The gulp command serves the project using a local webserver.
 	-The gulp command also listens for changes to any .scss file. When there is a change to any .scss file, the gulp styles command is run, the files are compiled, concatenated and minified to the dist folder, and the browser reloads, displaying the changes
@@ -39,7 +39,6 @@ const gulp = require('gulp'),
 	sass = require('gulp-sass'),
 	maps = require('gulp-sourcemaps'),
 	del = require('del'),
-	useref = require('gulp-useref'),
 	imageMin = require('gulp-imagemin'),
 	runSequence = require('run-sequence');
 
@@ -72,28 +71,14 @@ gulp.task('images', function(){
 	.pipe(copy('dist/content', { prefix: 1 }));
 });
 
-
 gulp.task('watchFiles', function() {
   gulp.watch('sass/global.scss', ['styles']);
 });
 
-gulp.task('reload', function(){
-
-})
-
 gulp.task('serve', function(){
 	gulp.src(['dist'])
 		.pipe(webserver({
-			livereload: {
-				enable: true,
-				filter: function(fileName) {
-          			if (fileName.match(/.map$/)) { // exclude all source maps from livereload
-            			return false;
-          			} else {
-            			return true;
-          			} 
-				}	
-			},
+			livereload: true,
 			port: 3000,
 			open: true
 			}));
