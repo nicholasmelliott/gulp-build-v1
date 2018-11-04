@@ -1,34 +1,3 @@
-/*
-(COMPLETE) 1. Build Process Dependencies:
-	-Running the npm install command installs the build process dependencies properly
-
-(COMPLETE) 2. Scripts Task:
-	-The gulp scripts command concatenates, minifies, and copies all of the project’s JavaScript files into an all.min.js file
-	-The command copies the all.min.js file into the dist/scripts folder
-
-(COMPLETE) 3. Styles Task:
-	-The gulp styles command compiles the project’s SCSS files into CSS, and concatenates and minifies into an all.min.css file
-	-The command copies the all.min.css file into the dist/styles folder
-
-(COMPLETE) 4. Source Maps:
-	-The gulp scripts command generates JavaScript source maps
-	-The gulp styles command generates CSS source maps
-
-(COMPLETE) 5. Images Task:
-	-The gulp images command copies the optimized images to the dist/content folder.
- 
-(COMPLETE) 6. Clean Task:
- 	-The gulp clean command deletes all of the files and folders in the dist folder.
-
-(COMPLETE) 7. Build Task:
- 	-The gulp build command properly runs the clean, scripts, styles, and images tasks.
- 	-The clean task fully completes before the scripts, styles, and images tasks are ran.
-
-(COMPLETE) 8. Default Task:
-	-The gulp command properly runs the build task as a dependency
-	-The gulp command serves the project using a local webserver.
-	-The gulp command also listens for changes to any .scss file. When there is a change to any .scss file, the gulp styles command is run, the files are compiled, concatenated and minified to the dist folder, and the browser reloads, displaying the changes
-*/
 
 const gulp = require('gulp'),
 	uglify = require('gulp-uglify'),
@@ -65,18 +34,24 @@ gulp.task('styles', function() {
     .pipe(gulp.dest('dist/styles'));
 });
 
+
 gulp.task('images', function(){
 	return gulp.src('images/*')
 	.pipe(imageMin())
 	.pipe(copy('dist/content', { prefix: 1 }));
 });
 
+gulp.task('html', function(){
+	return gulp.src('index.html')
+	.pipe(gulp.dest('dist'));
+})
+
 gulp.task('watchFiles', function() {
   gulp.watch('sass/global.scss', ['styles']);
 });
 
 gulp.task('serve', function(){
-	gulp.src(['dist'])
+	gulp.src('dist')
 		.pipe(webserver({
 			livereload: true,
 			port: 3000,
@@ -85,11 +60,12 @@ gulp.task('serve', function(){
 });
 
 gulp.task('clean', function(){
-	return del(['dist/content','dist/scripts','dist/styles']);
+	return del('dist/*');
 });
 
+//runs tasks in sequence with callback so tasks are complete before being served
 gulp.task('build', ['clean'], function(callback){
-	runSequence('images', ['scripts', 'styles'], function(){
+	runSequence('images', ['scripts', 'styles', 'html'], function(){
 		callback();
 	});
 });
